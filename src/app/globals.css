@@ -1,26 +1,88 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-surface: #ffffff;
+  --color-ink: #1a1a1a;
+  --color-accent: #ff5722; /* Vibrant orange */
+  --color-warm-bg: #ffe4cc; /* Soft peach/orange */
+  --color-warm-dark: #2a1b14; /* Deep brown/black for footer */
+
+  --font-serif: var(--font-playfair), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-body: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-surface);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: transparent;
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ── Typography Utilities ── */
+.font-display {
+  font-family: var(--font-serif);
+  letter-spacing: -0.02em;
+}
+
+/* ── Custom Gradients ── */
+.bg-hero-gradient {
+  background: linear-gradient(180deg, #d8683b 0%, #ffac8a 40%, #ffffff 100%);
+}
+
+.bg-footer-gradient {
+  background: linear-gradient(180deg, #d8683b 0%, #7d3515 50%, #2a1b14 100%);
+}
+
+.text-gradient-orange {
+  background: linear-gradient(90deg, #ff5722, #ff8a65);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Abstract Project Frames ── */
+.project-frame-1 {
+  background: radial-gradient(circle at top left, #e8f5e9, #c8e6c9);
+}
+.project-frame-2 {
+  background: radial-gradient(circle at bottom right, #e0f2f1, #b2dfdb);
+}
+.project-frame-3 {
+  background: radial-gradient(circle at center, #fff3e0, #ffe0b2);
+}
+.project-frame-4 {
+  background: radial-gradient(circle at top right, #eceff1, #cfd8dc);
+}
+.project-frame-5 {
+  background: radial-gradient(circle at bottom left, #fff0f5, #ffd1dc);
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }
