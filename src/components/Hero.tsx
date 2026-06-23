@@ -15,8 +15,9 @@ export function Hero() {
         className="object-cover opacity-90 select-none pointer-events-none"
       />
       
-      {/* Subtle overlay to ensure text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0a]/30 to-[#0a0a0a]/80 pointer-events-none" />
+      {/* Dark overlay to ensure text readability over busy background parts */}
+      <div className="absolute inset-0 bg-[#0a0a0a]/50 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0a]/60 to-[#0a0a0a] pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, y: 40, filter: "blur(10px)", scale: 0.95 }}
@@ -24,7 +25,7 @@ export function Hero() {
         transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
         className="z-10 mt-20 max-w-4xl"
       >
-        <h1 className="font-display text-[clamp(2.5rem,6vw,5rem)] leading-[1.05] tracking-tight text-white drop-shadow-md sm:text-balance">
+        <h1 className="font-sans font-medium text-[clamp(2.5rem,5.5vw,4.5rem)] leading-[1.1] tracking-tight text-white/95 [text-shadow:_0_8px_30px_rgb(0_0_0_/_80%)] sm:text-balance">
           Engineering robust platforms and intelligent pipelines that move forward
         </h1>
       </motion.div>
@@ -33,9 +34,9 @@ export function Hero() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-        className="z-10 mt-16 flex items-center gap-6 rounded-2xl bg-white/5 p-2 pr-6 backdrop-blur-md border border-white/10 shadow-2xl"
+        className="z-10 mt-16 flex items-center gap-5 rounded-[1.25rem] bg-black/40 p-1.5 pr-6 backdrop-blur-md border border-white/10 shadow-2xl"
       >
-        <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-accent text-white font-serif text-3xl font-bold shadow-[0_0_20px_rgba(255,107,53,0.4)]">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent text-white font-serif text-2xl font-bold shadow-[0_0_20px_rgba(255,107,53,0.4)]">
           T
         </div>
         <div className="text-left">
