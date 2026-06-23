@@ -6,7 +6,7 @@ import { ScrollReveal } from "./ScrollReveal";
 
 export function Footer() {
   return (
-    <footer className="relative flex flex-col items-center justify-between bg-footer-gradient px-6 pb-32 sm:pb-8 pt-32 text-white sm:pt-48 md:px-12 overflow-hidden">
+    <footer className="relative flex flex-col items-center justify-between bg-footer-gradient px-6 pb-32 pt-32 text-white sm:pt-48 md:px-12 overflow-hidden">
       {/* Decorative large circles resembling the glowing edges in the inspiration */}
       <div className="pointer-events-none absolute left-0 bottom-1/4 h-[600px] w-[200px] -translate-x-1/2 rounded-full border border-white/10" />
       <div className="pointer-events-none absolute right-0 bottom-1/4 h-[600px] w-[200px] translate-x-1/2 rounded-full border border-white/10" />
