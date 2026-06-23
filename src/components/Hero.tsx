@@ -6,13 +6,21 @@ export function Hero() {
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center bg-hero-gradient px-6 text-center">
       {/* Decorative large circles resembling the glowing edges in the inspiration */}
-      <div className="pointer-events-none absolute left-0 top-1/4 h-[800px] w-[200px] -translate-x-1/2 rounded-full border border-white/20" />
-      <div className="pointer-events-none absolute right-0 top-1/4 h-[800px] w-[200px] translate-x-1/2 rounded-full border border-white/20" />
+      <motion.div
+        animate={{ y: [-20, 20, -20], opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute left-0 top-1/4 h-[800px] w-[200px] -translate-x-1/2 rounded-full border border-white/20"
+      />
+      <motion.div
+        animate={{ y: [20, -20, 20], opacity: [0.5, 1, 0.5] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        className="pointer-events-none absolute right-0 top-1/4 h-[800px] w-[200px] translate-x-1/2 rounded-full border border-white/20"
+      />
 
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
+        initial={{ opacity: 0, y: 40, filter: "blur(10px)", scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
+        transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
         className="z-10 mt-20 max-w-4xl"
       >
         <h1 className="font-display text-[clamp(2.5rem,6vw,5rem)] leading-[1.05] tracking-tight text-white drop-shadow-sm sm:text-balance">

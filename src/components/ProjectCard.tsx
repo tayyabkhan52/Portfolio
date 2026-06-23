@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useState, MouseEvent } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 
@@ -20,6 +21,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({
   name,
+  type,
   description,
   tech,
   link,
@@ -33,11 +35,62 @@ export function ProjectCard({
   // Alternate layout direction based on index
   const isEven = index % 2 === 0;
 
+  // Brand configurations for custom glows matching each project
+  const brandColors = [
+    { border: "border-emerald-500/20", glow: "rgba(16, 185, 129, 0.25)" }, // AgriFusion
+    { border: "border-teal-500/20", glow: "rgba(13, 148, 136, 0.25)" },    // GreExchange
+    { border: "border-amber-500/20", glow: "rgba(217, 119, 6, 0.25)" },    // Parfum Prestige
+    { border: "border-indigo-500/20", glow: "rgba(79, 70, 229, 0.25)" },   // ShareBite
+    { border: "border-rose-500/20", glow: "rgba(225, 29, 72, 0.25)" }       // E-Store
+  ];
+  const brand = brandColors[index % brandColors.length];
+
+  // Motion values for 3D Tilt effect
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Map mouse positions to rotational angles
+  const rotateX = useTransform(y, [-0.5, 0.5], [6, -6]);
+  const rotateY = useTransform(x, [-0.5, 0.5], [-6, 6]);
+
+  // Spring settings for smooth physics transition
+  const rx = useSpring(rotateX, { stiffness: 150, damping: 22 });
+  const ry = useSpring(rotateY, { stiffness: 150, damping: 22 });
+
+  // Spotlight coordinates on the background canvas
+  const spotlightX = useMotionValue(0);
+  const spotlightY = useMotionValue(0);
+
+  const handleMouseMove = (e: MouseEvent<HTMLAnchorElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+    
+    // Normalize values between -0.5 and 0.5 for tilt
+    x.set((e.clientX - rect.left - w / 2) / w);
+    y.set((e.clientY - rect.top - h / 2) / h);
+
+    // Set precise coordinates for spotlight
+    spotlightX.set(e.clientX - rect.left);
+    spotlightY.set(e.clientY - rect.top);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  // Convert spotlight positions into a dynamic css gradient string
+  const spotlightBg = useTransform(
+    [spotlightX, spotlightY],
+    ([sx, sy]) => `radial-gradient(350px circle at ${sx}px ${sy}px, rgba(255, 255, 255, 0.35), transparent 80%)`
+  );
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
+      initial={{ opacity: 0, y: 60, scale: 0.95, filter: "blur(10px)" }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-10%" }}
       transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
       className={`flex flex-col gap-12 lg:gap-24 items-center ${
         isEven ? "lg:flex-row" : "lg:flex-row-reverse"
@@ -48,12 +101,38 @@ export function ProjectCard({
         href={link}
         target="_blank"
         rel="noreferrer"
-        className={`group relative w-full lg:w-3/5 overflow-hidden rounded-[1.5rem] sm:rounded-[1.75rem] ${frameClass} flex items-center justify-center p-2.5 sm:p-3.5 transition-transform duration-500 hover:scale-[1.015]`}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className={`group relative w-full lg:w-3/5 overflow-hidden rounded-[1.75rem] ${frameClass} flex items-center justify-center p-4 sm:p-6 transition-all duration-500`}
+        style={{
+          transformStyle: "preserve-3d",
+          perspective: 1200,
+        }}
       >
-        <div className="absolute inset-0 bg-white/0 transition-colors duration-500 group-hover:bg-white/5" />
+        {/* Dynamic cursor spotlight glow */}
+        <motion.div 
+          className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{ background: spotlightBg }}
+        />
+
+        {/* Brand ambient shadow glow behind mockup */}
+        <div 
+          className="absolute -inset-4 rounded-full opacity-0 blur-3xl transition-opacity duration-700 group-hover:opacity-100 pointer-events-none" 
+          style={{
+            background: `radial-gradient(circle, ${brand.glow} 0%, transparent 70%)`
+          }}
+        />
         
         {/* macOS Browser Mockup */}
-        <div className="relative w-full rounded-xl sm:rounded-2xl bg-[#f5f5f7] border border-black/5 shadow-xl overflow-hidden flex flex-col transition-transform duration-500 group-hover:translate-y-[-8px] group-hover:shadow-2xl">
+        <motion.div 
+          style={{ 
+            rotateX: rx, 
+            rotateY: ry, 
+            transformStyle: "preserve-3d",
+            backfaceVisibility: "hidden"
+          }}
+          className="relative w-full rounded-xl sm:rounded-2xl bg-[#f5f5f7] border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.06)] overflow-hidden flex flex-col transition-all duration-500 group-hover:shadow-[0_30px_60px_rgba(0,0,0,0.15)]"
+        >
           {/* macOS Browser Header */}
           <div className="h-7 sm:h-8 w-full border-b border-black/5 bg-[#eaeaea] flex items-center px-3 sm:px-4 justify-between select-none shrink-0">
             {/* Left: Window Controls */}
@@ -80,7 +159,7 @@ export function ProjectCard({
                 alt={name}
                 width={width || 1024}
                 height={height || 500}
-                className="w-full h-auto block transition-transform duration-700 group-hover:scale-[1.02]"
+                className="w-full h-auto block transition-transform duration-700 group-hover:scale-[1.03]"
                 priority={index < 2}
               />
             ) : (
@@ -100,40 +179,62 @@ export function ProjectCard({
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Floating open button */}
-        <div className="absolute bottom-6 right-6 flex h-12 w-12 items-center justify-center rounded-full bg-ink text-white opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:-translate-y-1">
+        <div className="absolute bottom-6 right-6 flex h-12 w-12 items-center justify-center rounded-full bg-ink text-white opacity-0 scale-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 group-hover:-translate-y-1 shadow-lg">
           <ArrowUpRight className="h-5 w-5" />
         </div>
       </a>
 
       {/* Content side */}
       <div className="w-full lg:w-2/5 flex flex-col justify-center">
-        <div className="flex items-center gap-4 mb-4">
-          <h3 className="font-display text-4xl sm:text-5xl text-ink leading-[1.1]">
-            {name}
-          </h3>
-          <span className="font-mono text-sm font-bold text-accent">
-            ({year})
+        {/* Index and Type Label */}
+        <span className="font-mono text-[10px] font-bold tracking-[0.2em] text-accent uppercase mb-3 block">
+          {`0${index + 1}`} // {type}
+        </span>
+        
+        <div className="flex items-baseline gap-3 mb-6">
+          <a href={link} target="_blank" rel="noreferrer" className="group/title inline-flex items-center gap-2">
+            <h3 className="font-display text-4xl sm:text-5xl text-ink leading-tight transition-colors duration-300 group-hover/title:text-[#2a1008] relative">
+              {name}
+              <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-[#2a1008] transition-all duration-300 group-hover/title:w-full" />
+            </h3>
+            <ArrowUpRight className="h-6 w-6 text-ink/30 transition-all duration-300 group-hover/title:text-accent group-hover/title:translate-x-1 group-hover/title:-translate-y-1 shrink-0" />
+          </a>
+          <span className="font-mono text-xs font-semibold text-ink/40">
+            {year}
           </span>
         </div>
         
-        <p className="mt-8 text-[15px] leading-relaxed text-ink/70">
+        <p className="text-[15px] leading-relaxed text-ink/70">
           {description}
         </p>
 
-        <div className="mt-10 flex flex-wrap gap-2">
+        <div className="mt-8 flex flex-wrap gap-1.5 sm:gap-2">
           {tech.map((t) => (
             <span
               key={t}
-              className="rounded bg-ink/5 px-3 py-1.5 font-mono text-[9px] uppercase tracking-widest text-ink/60"
+              className="rounded-full border border-ink/5 bg-ink/[0.02] px-3.5 py-1.5 font-mono text-[9px] font-semibold uppercase tracking-wider text-ink/50 transition-all duration-300 hover:border-accent/20 hover:bg-accent/5 hover:text-accent"
             >
               {t}
             </span>
           ))}
         </div>
+
+        <div className="mt-8 pt-4">
+          <a
+            href={link}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-widest text-[#2a1008] border-b border-[#2a1008]/20 pb-1 hover:text-accent hover:border-accent transition-all duration-300 group/link"
+          >
+            Explore Project
+            <span className="inline-block transition-transform duration-300 group-hover/link:translate-x-1">→</span>
+          </a>
+        </div>
       </div>
     </motion.div>
   );
 }
+
