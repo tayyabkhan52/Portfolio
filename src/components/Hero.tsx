@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center bg-hero-gradient px-6 text-center">
+    <section className="relative flex min-h-screen flex-col items-center justify-center bg-hero-gradient px-6 text-center overflow-hidden">
       {/* Decorative large circles resembling the glowing edges in the inspiration */}
       <motion.div
         animate={{ y: [-20, 20, -20], opacity: [0.5, 1, 0.5] }}
