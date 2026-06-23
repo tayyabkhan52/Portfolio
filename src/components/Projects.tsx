@@ -80,7 +80,7 @@ export function Projects() {
         </div>
       </ScrollReveal>
 
-      <div className="flex flex-col gap-32 sm:gap-48 max-w-6xl mx-auto">
+      <div className="flex flex-col gap-20 sm:gap-32 max-w-6xl mx-auto">
         {projects.map((project, idx) => (
           <ProjectCard key={project.name} {...project} index={idx} />
         ))}

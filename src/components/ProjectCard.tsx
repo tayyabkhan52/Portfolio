@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, MouseEvent } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useState, MouseEvent, useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform, useScroll } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 
@@ -86,8 +86,20 @@ export function ProjectCard({
     ([sx, sy]) => `radial-gradient(350px circle at ${sx}px ${sy}px, rgba(255, 255, 255, 0.35), transparent 80%)`
   );
 
+  // Scroll Parallax Effect for mobile "wow" factor
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  // Parallax subtle shifts
+  const visualY = useTransform(scrollYProgress, [0, 1], [20, -20]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [-10, 10]);
+
   return (
     <motion.div
+      ref={containerRef}
       initial={{ opacity: 0, y: 60, scale: 0.95, filter: "blur(10px)" }}
       whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "-10%" }}
@@ -97,7 +109,7 @@ export function ProjectCard({
       }`}
     >
       {/* Visual Frame side */}
-      <a
+      <motion.a
         href={link}
         target="_blank"
         rel="noreferrer"
@@ -105,6 +117,7 @@ export function ProjectCard({
         onMouseLeave={handleMouseLeave}
         className={`group relative w-full lg:w-3/5 overflow-hidden rounded-[1.75rem] ${frameClass} flex items-center justify-center p-4 sm:p-6 transition-all duration-500`}
         style={{
+          y: visualY,
           transformStyle: "preserve-3d",
           perspective: 1200,
         }}
@@ -185,10 +198,10 @@ export function ProjectCard({
         <div className="absolute bottom-6 right-6 flex h-12 w-12 items-center justify-center rounded-full bg-ink text-white opacity-0 scale-90 transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 group-hover:-translate-y-1 shadow-lg">
           <ArrowUpRight className="h-5 w-5" />
         </div>
-      </a>
+      </motion.a>
 
       {/* Content side */}
-      <div className="w-full lg:w-2/5 flex flex-col justify-center">
+      <motion.div style={{ y: contentY }} className="w-full lg:w-2/5 flex flex-col justify-center">
         {/* Index and Type Label */}
         <span className="font-mono text-[10px] font-bold tracking-[0.2em] text-accent uppercase mb-3 block">
           {`0${index + 1}`} // {type}
@@ -233,7 +246,7 @@ export function ProjectCard({
             <span className="inline-block transition-transform duration-300 group-hover/link:translate-x-1">→</span>
           </a>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
