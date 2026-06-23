@@ -25,8 +25,18 @@ export function Hero() {
         transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
         className="z-10 mt-20 max-w-4xl"
       >
-        <h1 className="font-sans font-medium text-[clamp(2.5rem,5.5vw,4.5rem)] leading-[1.1] tracking-tight text-white/95 [text-shadow:_0_8px_30px_rgb(0_0_0_/_80%)] sm:text-balance">
+        <h1 className="relative font-sans font-medium text-[clamp(2.5rem,5.5vw,4.5rem)] leading-[1.1] tracking-tight text-white/80 [text-shadow:_0_8px_30px_rgb(0_0_0_/_80%)] sm:text-balance">
           Engineering robust platforms and intelligent pipelines that move forward
+          
+          {/* Continuous Shimmer Animation Overlay */}
+          <motion.span
+            aria-hidden="true"
+            animate={{ backgroundPosition: ["200% center", "-200% center"] }}
+            transition={{ repeat: Infinity, duration: 6, ease: "linear" }}
+            className="absolute inset-0 bg-[linear-gradient(90deg,transparent_25%,rgba(255,255,255,1)_50%,transparent_75%)] bg-[length:250%_auto] bg-clip-text text-transparent pointer-events-none select-none drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]"
+          >
+            Engineering robust platforms and intelligent pipelines that move forward
+          </motion.span>
         </h1>
       </motion.div>
 
